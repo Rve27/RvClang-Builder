@@ -1,0 +1,84 @@
+name: RvClang
+
+on:
+  workflow_dispatch:
+    inputs:
+      BRANCH:
+        description: 'LLVM Branch'
+        required: true
+        default: 'main'
+      TELEGRAM_TOKEN:
+        description: 'Telegram token'
+        required: true
+        default: ''
+      TELEGRAM_CHAT:
+        description: 'Telegram Chat Id'
+        required: true
+        default: ''
+      GIT_TOKEN:
+        description: 'Github Token'
+        required: true
+        default: ''
+
+jobs:
+  build:
+    name: RvClang by ${{ github.actor }}
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+    - name: Check Out
+      uses: actions/checkout@v4
+
+    - name: Cleanup
+      uses: rokibhasansagar/slimhub_actions@main
+
+    - name: Set Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 64
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt -y upgrade
+        sudo apt -y install bc \
+            binutils-dev \
+            bison \
+            build-essential \
+            ca-certificates \
+            ccache \
+            clang \
+            cmake \
+            curl \
+            file \
+            flex \
+            git \
+            libelf-dev \
+            libssl-dev \
+            libstdc++-$(apt list libstdc++6 2>/dev/null | grep -Eos '[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d . -f 1)-dev \
+            lld \
+            make \
+            ninja-build \
+            python3-dev \
+            texinfo \
+            u-boot-tools \
+            xz-utils \
+            zlib1g-dev
+
+    - name: Clone Repo
+      run: |
+        git clone -b main https://github.com/Rve27/RvClang-Builder.git
+
+    - name: Run Build.sh
+      run: |
+        cd RvClang-Builder
+        export TELEGRAM_TOKEN="${{ github.event.inputs.TELEGRAM_TOKEN }}"
+        export TELEGRAM_CHAT="${{ github.event.inputs.TELEGRAM_CHAT }}"
+        export GIT_TOKEN="${{ github.event.inputs.GIT_TOKEN }}"
+        export BRANCH="${{ github.event.inputs.BRANCH }}"
+        bash build.sh
+      continue-on-error: true
