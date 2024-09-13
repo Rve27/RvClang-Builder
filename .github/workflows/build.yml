@@ -71,11 +71,11 @@ jobs:
 
     - name: Clone Repo
       run: |
-        git clone -b good-rev https://github.com/Rv-Trees/clang-build.git
+        git clone -b good-rev https://github.com/Rve27/RvClang_Builder.git RvClang
 
     - name: Run Build.sh
       run: |
-        cd clang-build
+        cd RvClang
         export TELEGRAM_TOKEN="${{ github.event.inputs.TELEGRAM_TOKEN }}"
         export TELEGRAM_CHAT="${{ github.event.inputs.TELEGRAM_CHAT }}"
         export GIT_TOKEN="${{ github.event.inputs.GIT_TOKEN }}"
