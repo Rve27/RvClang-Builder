@@ -10,6 +10,7 @@ err() {
 }
 
 # Environment checker
+send_msg "Checking environment..."
 msg "Checking environment ..."
 for environment in TELEGRAM_TOKEN TELEGRAM_CHAT GIT_TOKEN BRANCH; do
     [ -z "${!environment}" ] && {
@@ -42,7 +43,8 @@ send_file() {
 
 # Building LLVM's
 msg "Building LLVM ..."
-send_msg "<b>Start build RvClang from <code>[ $BRANCH ]</code> branch</b>"
+send_msg "<b>Start build RvClang (Good Revision) from <code>[ $BRANCH ]</code> branch</b>"
+send_msg "Building LLVM..."
 ./build-llvm.py \
     --defines LLVM_PARALLEL_COMPILE_JOBS="$(nproc)" LLVM_PARALLEL_LINK_JOBS="$(nproc)" CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
     --install-folder "$HOME_DIR/install" \
@@ -66,6 +68,7 @@ for file in install/bin/clang-[1-9]*; do
 done
 
 # Build binutils
+send_msg "Build binutils..."
 msg "Build binutils ..."
 ./build-binutils.py \
     --install-folder "$HOME_DIR/install" \
@@ -115,7 +118,7 @@ pushd "$HOME_DIR"/install || exit
 {
     echo "# Quick Info
 * Build Date : $build_date
-* Clang Version : $clang_version
+* Clang Version : $clang_version (Good Revision)
 * Binutils Version : $binutils_version
 * Compiled Based : $llvm_commit_url"
 } >>README.md
@@ -194,15 +197,15 @@ done
 # Send message to telegram
 send_msg "
 <b>---- New Release RvClang ----</b>
-- <a href='https://github.com/llvm/llvm-project/commit/15397583e3d85eb1f1a051de26eb409aaedd3b54'>Good Revision</a>
+• <a href='https://github.com/llvm/llvm-project/commit/15397583e3d85eb1f1a051de26eb409aaedd3b54'>Good Revision</a>
 <b>Build Date : </b>
-- <code>$build_date</code>
+• <code>$build_date</code>
 <b>Clang Version : </b>
-- <code>$clang_version</code>
+• <code>$clang_version</code>
 <b>Binutils Version : </b>
-- <code>$binutils_version</code>
+• <code>$binutils_version</code>
 <b>Compile Based : </b>
-- <a href='$llvm_commit_url'>$llvm_commit_url</a>
+• <a href='$llvm_commit_url'>$llvm_commit_url</a>
 <b>Push Repository : </b>
-- <a href='https://github.com/Rv-Trees/RvClang.git'>RvClang</a>
+• <a href='https://github.com/Rv-Trees/RvClang.git'>RvClang</a>
 <b>--------------------------</b>"
