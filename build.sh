@@ -50,7 +50,7 @@ send_msg "<b>Start build RvClang from <code>[ $BRANCH ]</code> branch</b>"
     --no-ccache \
     --quiet-cmake \
     --ref "$BRANCH" \
-    --shallow-clone \
+    --use-good-revision \
     --targets AArch64 ARM X86 \
     --vendor-string "Rv"
 
@@ -101,8 +101,8 @@ popd || exit
 llvm_commit_url="https://github.com/llvm/llvm-project/commit/$short_llvm_commit"
 clang_version="$("$HOME_DIR"/install/bin/clang --version | head -n1 | cut -d' ' -f4)"
 build_date="$(TZ=Asia/Jakarta date +"%Y-%m-%d")"
-tags="RvClang-$clang_version-release"
-file="RvClang-$clang_version.tar.gz"
+tags="RvClang-$clang_version-good_revision-release"
+file="RvClang-$clang_version-good_revision.tar.gz"
 clang_link="https://github.com/Rv-Trees/RvClang/releases/download/$tags/$file"
 
 # Get binutils version
@@ -134,7 +134,7 @@ else
     cp -r "$HOME_DIR"/install/README.md "$BRANCH"
 fi
 git add .
-git commit -asm "RvClang-$clang_version: $(TZ=Asia/Jakarta date +"%Y%m%d")"
+git commit -asm "RvClang-$clang_version-good_revision: $(TZ=Asia/Jakarta date +"%Y%m%d")"
 git push -f origin main
 
 # Check tags already exists or not
@@ -194,6 +194,7 @@ done
 # Send message to telegram
 send_msg "
 <b>---- New Release RvClang ----</b>
+- <a href='https://github.com/llvm/llvm-project/commit/15397583e3d85eb1f1a051de26eb409aaedd3b54'>Good Revision</a>
 <b>Build Date : </b>
 - <code>$build_date</code>
 <b>Clang Version : </b>

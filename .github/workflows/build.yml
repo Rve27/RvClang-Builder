@@ -1,4 +1,4 @@
-name: RvClang
+name: RvClang (Good Revision)
 
 on:
   workflow_dispatch:
@@ -71,7 +71,7 @@ jobs:
 
     - name: Clone Repo
       run: |
-        git clone -b main https://github.com/Rv-Trees/clang-build.git
+        git clone -b good-rev https://github.com/Rv-Trees/clang-build.git
 
     - name: Run Build.sh
       run: |
